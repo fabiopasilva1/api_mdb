@@ -9,14 +9,15 @@ let db;
 async function connect() {
     try {
         const client = await MongoClient.connect(url, {
-            // useNewUrlParser: true,
-            // useUnifiedTopology: true,
-            compressors: "zlib",
-            zlibCompressionLevel: -1,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            // compressors: "zlib",
+            // zlibCompressionLevel: -1,
             connectTimeoutMS: 1000 * 60 * 50, //50min,
             serverSelectionTimeoutMS: 1000 * 60 * 50,
-            maxPoolSize: 500, //recomendado ,
+            maxPoolSize: 50, //recomendado ,
             maxConnecting: 25,
+            retryReads: true,
         });
 
         console.log("Conectado ao MongoDB");

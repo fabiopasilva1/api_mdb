@@ -52,7 +52,7 @@ class ConsultaService {
                 if (regex) {
                     // Usa regex para buscas parciais
                     query[campo] = {
-                        $regex: `^${valor}`, // Inicia com o valor,
+                        $regex: `/^${valor}/`, // $regex: valor,
                         $options: "i",
                     };
                 } else {
@@ -63,12 +63,33 @@ class ConsultaService {
             console.log({ query });
             // Consulta ao banco
             const collection = db.collection(table); // Nome da coleção
+            const keys = Object.keys(query);
+            const _index = keys.map((k) => ({ [k]: 1 }));
 
+            collection
+                .createIndex(_index)
+                .then((r) => {
+                    console.log({
+                        r,
+                        DOCUMENT: "ConsultaService",
+                        message: "Index created",
+                        _index,
+                    });
+                })
+                .catch((e) => {
+                    console.log({
+                        code: e.code,
+                        codeName: e.codeName,
+                        DOCUMENT: "ConsultaService",
+                        message: "Index already exists",
+                        _index,
+                    });
+                });
             const result = await collection
                 .aggregate([{ $match: query }, { $count: "total" }])
                 .toArray();
             const total = result[0]?.total || 0;
-            const cursor = await collection.find(query, {
+            const cursor = collection.find(query, {
                 _id: 0,
                 projection: { ...this.projection },
             });
@@ -77,16 +98,15 @@ class ConsultaService {
             cursor.limit(_limit);
 
             const results = await cursor.toArray();
-
+            client.close(true);
             //   console.log(client.);
-
+            console.log({ query });
             res.status(200).json({
                 total: total,
                 page: page ?? 1,
-                pageSize: await cursor.count(),
+                pageSize: limit,
                 data: results,
             });
-            client.close(true);
         } catch (error) {
             client.close(true);
 
