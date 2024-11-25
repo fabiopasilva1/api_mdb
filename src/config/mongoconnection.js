@@ -7,26 +7,26 @@ const dbName = process.env.MONGODB_DB;
 // Conex o com o MongoDB
 let db;
 async function connect() {
-  try {
-    const client = await MongoClient.connect(url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      compressors: "snappy,zlib,zstd",
-      zlibCompressionLevel: 1,
-      connectTimeoutMS: 1000 * 60 * 50, //50min,
-      serverSelectionTimeoutMS: 1000 * 60 * 50,
-      maxPoolSize: 25, //recomendado ,
-      maxConnecting: 25,
-    });
+    try {
+        const client = await MongoClient.connect(url, {
+            // useNewUrlParser: true,
+            // useUnifiedTopology: true,
+            compressors: "zlib",
+            zlibCompressionLevel: -1,
+            connectTimeoutMS: 1000 * 60 * 50, //50min,
+            serverSelectionTimeoutMS: 1000 * 60 * 50,
+            maxPoolSize: 500, //recomendado ,
+            maxConnecting: 25,
+        });
 
-    console.log("Conectado ao MongoDB");
-    db = client.db(dbName);
+        console.log("Conectado ao MongoDB");
+        db = client.db(dbName);
 
-    return { db, client };
-  } catch (err) {
-    console.error("Erro ao conectar ao MongoDB:", err);
-    throw err;
-  }
+        return { db, client };
+    } catch (err) {
+        console.error("Erro ao conectar ao MongoDB:", err);
+        throw err;
+    }
 }
 
 module.exports = { connect };
