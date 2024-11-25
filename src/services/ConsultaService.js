@@ -51,20 +51,23 @@ class ConsultaService {
 
                 if (regex) {
                     // Usa regex para buscas parciais
-                    query[campo] = { $regex: new RegExp(`^${valor}`, "i") }; // 'i' para case-insensitive
+                    query[campo] = {
+                        $regex: `^${valor}`, // Inicia com o valor,
+                        $options: "i",
+                    };
                 } else {
                     // Busca exata
                     query[campo] = valor;
                 }
             }
-
+            console.log({ query });
             // Consulta ao banco
             const collection = db.collection(table); // Nome da coleção
-            const keys = Object.keys(query);
-            const _index = keys.map((k) => ({ [k]: 1 }));
 
-            collection.createIndex(_index);
-            const total = await collection.countDocuments(query);
+            const result = await collection
+                .aggregate([{ $match: query }, { $count: "total" }])
+                .toArray();
+            const total = result[0]?.total || 0;
             const cursor = await collection.find(query, {
                 _id: 0,
                 projection: { ...this.projection },
@@ -74,9 +77,16 @@ class ConsultaService {
             cursor.limit(_limit);
 
             const results = await cursor.toArray();
-            client.close(true);
+
             //   console.log(client.);
-            res.status(200).json({ total, data: results });
+
+            res.status(200).json({
+                total: total,
+                page: page ?? 1,
+                pageSize: await cursor.count(),
+                data: results,
+            });
+            client.close(true);
         } catch (error) {
             client.close(true);
 
