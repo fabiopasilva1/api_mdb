@@ -52,8 +52,7 @@ class ConsultaService {
                 if (regex) {
                     // Usa regex para buscas parciais
                     query[campo] = {
-                        $regex: `/^${valor}/`, // $regex: valor,
-                        $options: "i",
+                        $regex: `^${valor}`, // $regex: valor,
                     };
                 } else {
                     // Busca exata
@@ -63,44 +62,46 @@ class ConsultaService {
             console.log({ query });
             // Consulta ao banco
             const collection = db.collection(table); // Nome da coleção
-            const keys = Object.keys(query);
-            const _index = keys.map((k) => ({ [k]: 1 }));
+            // const keys = Object.keys(query);
+            // const _index = keys.map((k) => ({ [k]: 1 }));
 
-            collection
-                .createIndex(_index)
-                .then((r) => {
-                    console.log({
-                        r,
-                        DOCUMENT: "ConsultaService",
-                        message: "Index created",
-                        _index,
-                    });
-                })
-                .catch((e) => {
-                    console.log({
-                        code: e.code,
-                        codeName: e.codeName,
-                        DOCUMENT: "ConsultaService",
-                        message: "Index already exists",
-                        _index,
-                    });
-                });
+            // await collection
+            //     .createIndex(_index)
+            //     .then((r) => {
+            //         console.log({
+            //             r,
+            //             DOCUMENT: "ConsultaService",
+            //             message: "Index created",
+            //             _index,
+            //         });
+            //     })
+            //     .catch((e) => {
+            //         console.log({
+            //             code: e.code,
+            //             codeName: e.codeName,
+            //             DOCUMENT: "ConsultaService",
+            //             message: "Index already exists",
+            //             _index,
+            //         });
+            //     });
+            // const result = collection.countDocuments(query);
             const result = await collection
-                .aggregate([{ $match: query }, { $count: "total" }])
+                .aggregate([{ $match: { ...query } }, { $count: "total" }])
                 .toArray();
             const total = result[0]?.total || 0;
+            // const total = result;
             const cursor = collection.find(query, {
                 _id: 0,
                 projection: { ...this.projection },
             });
 
-            cursor.skip(skip);
+            cursor.skip(skip - 1 * _limit);
             cursor.limit(_limit);
 
             const results = await cursor.toArray();
             client.close(true);
             //   console.log(client.);
-            console.log({ query });
+            console.log({ query, total });
             res.status(200).json({
                 total: total,
                 page: page ?? 1,
