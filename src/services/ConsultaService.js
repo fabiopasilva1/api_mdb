@@ -63,28 +63,28 @@ class ConsultaService {
             console.log({ query });
             // Consulta ao banco
             const collection = db.collection(table); // Nome da coleção
-            // const keys = Object.keys(query);
-            // const _index = keys.map((k) => ({ [k]: 1 }));
+            const keys = Object.keys(query);
+            const _index = keys.map((k) => ({ [k]: 1 }));
 
-            // await collection
-            //     .createIndex(_index)
-            //     .then((r) => {
-            //         console.log({
-            //             r,
-            //             DOCUMENT: "ConsultaService",
-            //             message: "Index created",
-            //             _index,
-            //         });
-            //     })
-            //     .catch((e) => {
-            //         console.log({
-            //             code: e.code,
-            //             codeName: e.codeName,
-            //             DOCUMENT: "ConsultaService",
-            //             message: "Index already exists",
-            //             _index,
-            //         });
-            //     });
+            await collection
+                .createIndex(_index)
+                .then((r) => {
+                    console.log({
+                        r,
+                        DOCUMENT: "ConsultaService",
+                        message: "Index created",
+                        _index,
+                    });
+                })
+                .catch((e) => {
+                    console.log({
+                        code: e.code,
+                        codeName: e.codeName,
+                        DOCUMENT: "ConsultaService",
+                        message: "Index already exists",
+                        _index,
+                    });
+                });
             // const result = collection.countDocuments(query);
             const result = await collection
                 .aggregate([{ $match: { ...query } }, { $count: "total" }])
