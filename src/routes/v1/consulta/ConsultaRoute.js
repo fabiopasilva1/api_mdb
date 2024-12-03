@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  ConsultaController,
+    ConsultaController,
 } = require("../../../controllers/ConsultaController");
 const router = express.Router();
 
