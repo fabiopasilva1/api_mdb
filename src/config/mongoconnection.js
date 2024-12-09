@@ -11,7 +11,7 @@ async function connect() {
         const client = await MongoClient.connect(url, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            // compressors: "zlib",
+            compressors: ["snappy", "zlib"],
             // zlibCompressionLevel: -1,
             connectTimeoutMS: 1000 * 60 * 50, //50min,
             serverSelectionTimeoutMS: 1000 * 60 * 50,
