@@ -58,7 +58,6 @@ class ConsultaService {
                     // Busca exata
                     query[campo] = valor;
                 }
-                console.log({ campo, valor });
             }
             console.log({ query });
             // Consulta ao banco
