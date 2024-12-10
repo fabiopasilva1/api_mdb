@@ -19,7 +19,7 @@ app.use((req, res, next) => {
         next();
     });
 });
-app.use(compression({ ...configCompression }));
+// app.use(compression({ ...configCompression }));
 app.use("/", V1);
 
 process.on("uncaughtException", function (err) {
