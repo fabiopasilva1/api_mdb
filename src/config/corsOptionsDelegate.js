@@ -1,6 +1,6 @@
 const mongrest = require("./middlewares");
 const cors = mongrest.find((mid) => mid.name === "mongrest::cors");
-
+console.log(mongrest.map((mid) => mid));
 var allowlist = [...cors.origins];
 var allowMehods = [...cors.methods];
 var allowUseAgenge = [...cors.useAgent];
