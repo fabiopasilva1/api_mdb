@@ -1,6 +1,4 @@
-const swaggerAutogen = require("swagger-autogen")({
-    openapi: "3.0.0",
-});
+const swaggerAutogen = require("swagger-autogen")({ openapi: "3.0.0" });
 
 const doc = {
     info: {
@@ -34,4 +32,6 @@ const doc = {
 const outputFile = "./swagger-output.json";
 const endpointsFiles = ["./endpoints.js"];
 
-swaggerAutogen(outputFile, endpointsFiles, doc);
+swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
+    require("./server");
+});
