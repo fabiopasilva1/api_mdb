@@ -3,7 +3,7 @@ services:
   mongorest:
     container_name: mongorest
     build: .
-    image: fabiopasilva1/mongorest:version1.0.1
+    image: fabiopasilva1/mongorest:version1.1.5
     restart: unless-stopped
     env_file: .env
     environment:
@@ -19,7 +19,7 @@ services:
       - ./.env:/opt/uneel/mongorest/app/.env
       - ./swagger-output.json:/opt/uneel/mongorest/app/swagger-output.json
     ports:
-      - "3001:3001"
+      - ${API_PORT}:${API_PORT}
     networks:
       - uneel
     mem_limit: 2024m

@@ -28,7 +28,6 @@ class ConsultaService {
         try {
             const { filters } = req.body;
             const { table, limit, page } = req.query;
-            console.log(req);
 
             const _limit = parseInt(limit ?? 10);
             const skip = parseInt(page ?? 1) * _limit;
@@ -61,7 +60,7 @@ class ConsultaService {
                     query[campo] = valor;
                 }
             }
-            console.log({ query });
+
             // Consulta ao banco
             const collection = db.collection(table); // Nome da coleção
             const keys = Object.keys(query);
