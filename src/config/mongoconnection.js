@@ -1,14 +1,16 @@
 require("dotenv").config();
+const env = require("./env");
 const { MongoClient } = require("mongodb");
 
-const url = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB;
+const url = env("MONGODB_URI", "mongodb://localhost:27017");
+const dbName = env("MONGODB_DB", "");
 
+const client = new MongoClient(url);
 // Conex o com o MongoDB
 let db;
 async function connect() {
     try {
-        const client = await MongoClient.connect(url, {
+        await client.connect(url, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             compressors: ["snappy", "zlib"],

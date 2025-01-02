@@ -10,75 +10,25 @@
       "url": "http://localhost:3001"
     }
   ],
+  "tags": [
+    {
+      "name": "Consulta"
+    }
+  ],
   "paths": {
-    "/users/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "version",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/users": {
-      "post": {
-        "description": "",
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "example": "any"
-                  },
-                  "age": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/consulta/": {
       "post": {
-        "description": "",
+        "tags": [
+          "Consulta"
+        ],
+        "summary": "Realiza donsulta de dados no banco de dados",
+        "description": "Retorna valores de quantidades ao consultar",
         "parameters": [
           {
             "name": "table",
             "in": "query",
+            "description": "Nome da Tabela",
+            "example": "target_cred_links2s",
             "schema": {
               "type": "string"
             }
@@ -86,34 +36,58 @@
           {
             "name": "limit",
             "in": "query",
+            "description": "Limite de registros",
+            "example": 10,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           },
           {
             "name": "page",
             "in": "query",
+            "description": "Pagina atual",
+            "example": 1,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
         "requestBody": {
+          "required": true,
+          "description": "Informa os filtros a serem usados na consulta",
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
+                "type": "array",
+                "required": [
+                  "campo",
+                  "valor"
+                ],
                 "properties": {
-                  "filtros": {
-                    "example": "any"
+                  "campo": {
+                    "type": "string",
+                    "description": "Nome do Campo",
+                    "example": "uf"
+                  },
+                  "valor": {
+                    "type": "string",
+                    "description": "Valor do campo",
+                    "example": "SP"
+                  },
+                  "regex": {
+                    "type": "boolean",
+                    "description": "Indica se a consulta deve ser feita com regex",
+                    "example": true
                   }
                 }
               }
@@ -124,29 +98,91 @@
     },
     "/login/": {
       "post": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
+        "tags": [
+          "Login"
+        ],
+        "summary": "Realiza o login e retorna o token de acesso",
+        "description": "Utilize o token de acesso para autenticar na API",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Informa es do Usu rio",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "required": {
+                  "type": "array",
+                  "example": [
+                    "email",
+                    "password"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                },
                 "properties": {
-                  "username": {
-                    "example": "any"
-                  },
-                  "password": {
-                    "example": "any"
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Email do usu rio"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "johndoe@example.com"
+                        }
+                      }
+                    },
+                    "password": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Senha do usu rio"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "someSecretPassword"
+                        }
+                      }
+                    }
                   }
                 }
               }
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
         }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

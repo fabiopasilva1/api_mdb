@@ -26,21 +26,23 @@ class ConsultaService {
     async find(req, res) {
         const { db, client } = await connect();
         try {
-            const { filtros } = req.body;
+            const { filters } = req.body;
             const { table, limit, page } = req.query;
+            console.log(req);
+
             const _limit = parseInt(limit ?? 10);
             const skip = parseInt(page ?? 1) * _limit;
 
             // Validação básica
-            if (!filtros || !Array.isArray(filtros) || filtros.length === 0) {
+            if (!filters || !Array.isArray(filters) || filters.length === 0) {
                 return res.status(400).json({
-                    error: "Os filtros são obrigatórios e devem ser uma lista com pelo menos um item.",
+                    error: "Os filters são obrigatórios e devem ser uma lista com pelo menos um item.",
                 });
             }
 
             // Construção do filtro dinâmico
             let query = {};
-            for (let filtro of filtros) {
+            for (let filtro of filters) {
                 const { campo, valor, regex } = filtro;
 
                 if (!campo || typeof valor === "undefined") {

@@ -1,4 +1,6 @@
-const swaggerAutogen = require("swagger-autogen")({ openapi: "3.0.0" });
+const swaggerAutogen = require("swagger-autogen")({
+    openapi: "3.0.0",
+});
 
 const doc = {
     info: {
@@ -11,11 +13,20 @@ const doc = {
             url: "http://localhost:3001",
         },
     ],
+    tags: [{ name: "Login", name: "Consulta" }],
+    components: {
+        securitySchemes: {
+            bearerAuth: {
+                type: "http",
+                scheme: "bearer",
+                bearerFormat: "JWT",
+            },
+        },
+    },
+    schemes: ["http", "https"],
 };
 
 const outputFile = "./swagger-output.json";
 const endpointsFiles = ["./endpoints.js"];
 
-swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
-    require("./server"); // Your project's root file
-});
+swaggerAutogen(outputFile, endpointsFiles, doc);
