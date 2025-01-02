@@ -10,7 +10,12 @@ const doc = {
     },
     servers: [
         {
-            url: ["http://localhost:3001", "https://infra.apihostpress.com.br"],
+            url: "http://localhost:3001",
+            description: "Development server",
+        },
+        {
+            url: "https://infra.apihostpress.com.br",
+            description: "Production server",
         },
     ],
     tags: [{ name: "Login", name: "Consulta" }],
